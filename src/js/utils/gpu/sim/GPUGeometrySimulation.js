@@ -6,7 +6,14 @@
 import GPUGeometry from './GPUGeometry';
 import SimulationTexture from './SimulationTexture';
 
-import * as THREE from 'three';
+import {ShaderMaterial} from 'three';
+import {ShadowMaterial} from 'three';
+import {RawShaderMaterial} from 'three';
+import {BufferGeometry} from 'three';
+import {Mesh} from 'three';
+import {BufferAttribute} from 'three';
+import {Vector2} from 'three';
+import {ShaderLib} from 'three';
 
 import vs_buffer from './glsl/vs-buffer-geometry-sim.glsl';
 import fs_buffer from './glsl/fs-buffer-geometry-sim.glsl';
@@ -25,7 +32,7 @@ export default class GPUGeometrySimulation {
         this.matcap = params.matcap;
         this.specialMatcap = params.specialMatcap;
         this.special2Matcap = params.special2Matcap;
-
+        this.initialBuffer = params.initialBuffer;
         this.isMobile = params.isMobile;
 
         this.init();
@@ -41,6 +48,7 @@ export default class GPUGeometrySimulation {
         this.simulator = new SimulationTexture( {
             sizeW: this.sizeSimulation,
             sizeH: this.sizeSimulation,
+            initialBuffer: this.initialBuffer,
             renderer: this.renderer
         } );
 
@@ -49,15 +57,16 @@ export default class GPUGeometrySimulation {
     }
 
     setupMesh(){
-        this.positions = new THREE.BufferAttribute( new Float32Array( this.totalVertices * 3 ), 3 );
-        this.index2D = new THREE.BufferAttribute( new Float32Array( this.totalVertices * 4 ), 4 );
+
+        this.positions = new BufferAttribute( new Float32Array( this.totalVertices * 3 ), 3 );
+        this.index2D = new BufferAttribute( new Float32Array( this.totalVertices * 4 ), 4 );
 
         var geomSize = Math.sqrt(this.gpuGeometry.total);
         var divSim = 1 / this.sizeSimulation;
         var divGeom = 1 / geomSize;
 
-        var uvSim  = new THREE.Vector2( 0, 0 );
-        var uvGeom = new THREE.Vector2( 0, 0 );
+        var uvSim  = new Vector2( 0, 0 );
+        var uvGeom = new Vector2( 0, 0 );
         var counter = 0;
 
         for ( var r = 0; r < this.totalSimulation; r++ ) {
@@ -81,16 +90,16 @@ export default class GPUGeometrySimulation {
             counter --;
         }
 
-        this.bufferGeometry = new THREE.BufferGeometry();
+        this.bufferGeometry = new BufferGeometry();
         this.bufferGeometry.addAttribute( 'position', this.positions );
         this.bufferGeometry.addAttribute( 'index2D', this.index2D );
 
         if( this.isMobile ){
-            this.bufferMaterial = new THREE.RawShaderMaterial();
+            this.bufferMaterial = new RawShaderMaterial();
             this.bufferMaterial.vertexShader =  vs_buffer_mobile;
             this.bufferMaterial.fragmentShader = fs_buffer_mobile;
         } else {
-            this.bufferMaterial = new THREE.ShadowMaterial();
+            this.bufferMaterial = new ShadowMaterial();
             this.bufferMaterial.extensions.derivatives = true;
             this.bufferMaterial.lights = true;
             this.bufferMaterial.vertexShader =  vs_buffer;
@@ -106,18 +115,17 @@ export default class GPUGeometrySimulation {
         this.bufferMaterial.uniforms['uSpecial2Matcap'] = { type: 't', value: this.special2Matcap };
         this.bufferMaterial.uniforms['uNormalMap'] = { type: 't', value: this.matcap};
 
-        this.bufferMesh = new THREE.Mesh( this.bufferGeometry, this.bufferMaterial );
+        this.bufferMesh = new Mesh( this.bufferGeometry, this.bufferMaterial );
         this.bufferMesh.castShadow = true;
         this.bufferMesh.receiveShadow = true;
 
-        // magic here
-        this.bufferMesh.customDepthMaterial = new THREE.ShaderMaterial( {
+        this.bufferMesh.customDepthMaterial = new ShaderMaterial( {
             defines: {
                 'USE_SHADOWMAP': '',
                 'DEPTH_PACKING': '3201'
             },
             vertexShader: vs_depth_buffer,
-            fragmentShader: THREE.ShaderLib.depth.fragmentShader,
+            fragmentShader: ShaderLib.depth.fragmentShader,
 
             uniforms: this.bufferMaterial.uniforms
         } );

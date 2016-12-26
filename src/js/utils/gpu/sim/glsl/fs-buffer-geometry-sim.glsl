@@ -74,12 +74,12 @@ void main(){
     vec2 calculatedNormal = vec2( r.x / m + 0.5,  r.y / m + 0.5 );
 
     vec3 base = texture2D( uMatcap, calculatedNormal ).rgb;
-    if( vU.w < 0.2 ){
-        base = texture2D( uSpecialMatcap, calculatedNormal ).rgb;
-        if( vU.w < 0.1 ){
-            base = texture2D( uSpecial2Matcap, calculatedNormal ).rgb;
-        }
-    }
+    //if( vU.w < 0.2 ){
+      //  base = texture2D( uSpecialMatcap, calculatedNormal ).rgb;
+       // if( vU.w < 0.1 ){
+         //   base = texture2D( uSpecial2Matcap, calculatedNormal ).rgb;
+       // }
+   // }
 
     float rim = 1.75 * max( 0., abs( dot( normalize( vNormal ), normalize( -vOPosition.xyz ) ) ) );
     base += useSSS * color * ( 1. - .75 * rim );

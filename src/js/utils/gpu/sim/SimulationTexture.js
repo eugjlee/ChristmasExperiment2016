@@ -3,6 +3,7 @@
  */
 
 'use strict'
+import dat from 'dat-gui';
 
 import {NearestFilter} from 'three';
 import {RGBAFormat} from 'three';
@@ -107,15 +108,15 @@ export default class SimulationTexture extends BaseGLPass {
         this.targets = [  this.finalPositionsRT,  this.finalPositionsRT.clone() ];
         this.pass( this.updatePositionsMaterial,  this.finalPositionsRT );
 
-        // this.uniforms = {
-        //     uNoiseTimeScale: this.noiseTimeScale,
-        //     uNoisePositionScale: this.noisePositionScale,
-        //     uNoiseScale: this.noiseScale
-        // };
-        // this.gui = new dat.GUI();
-        // this.gui.add(this.uniforms, 'uNoiseTimeScale', 0, 3);
-        // this.gui.add(this.uniforms, 'uNoisePositionScale', 0, 0.2);
-        // this.gui.add(this.uniforms, 'uNoiseScale', 0, 0.1);
+        this.uniforms = {
+            uNoiseTimeScale: this.noiseTimeScale,
+            uNoisePositionScale: this.noisePositionScale,
+            uNoiseScale: this.noiseScale
+        };
+        this.gui = new dat.GUI();
+        this.gui.add(this.uniforms, 'uNoiseTimeScale', 0, 3);
+        this.gui.add(this.uniforms, 'uNoisePositionScale', 0, 0.2);
+        this.gui.add(this.uniforms, 'uNoiseScale', 0, 0.1);
     }
 
     update(){
@@ -126,8 +127,8 @@ export default class SimulationTexture extends BaseGLPass {
         this.pingpong = 1 - this.pingpong;
         this.pass( this.updatePositionsMaterial, this.targets[ this.pingpong ] );
 
-        // for( var p in this.uniforms ){
-        //     this.updatePositionsMaterial.uniforms[ p ].value = this.uniforms[ p ];
-        // }
+        for( var p in this.uniforms ){
+            this.updatePositionsMaterial.uniforms[ p ].value = this.uniforms[ p ];
+        }
     }
 }
