@@ -15,7 +15,7 @@ import {Vector3} from 'three';
 
 import vs_simpleQuad from './glsl/vs-simple-quad.glsl';
 import fs_updatePositions from './glsl/fs-update-positions.glsl';
-import BaseGLPass from './BaseGLPass';
+import BaseGLPass from '../core/BaseGLPass';
 
 export default class SimulationTexture extends BaseGLPass {
 

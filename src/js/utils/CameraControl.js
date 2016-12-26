@@ -16,8 +16,8 @@ export default class CameraControl {
         this.downPoint = { x : 0, y : 0 };
         this.down = false;
         this.PI = 3.14159265359;
-        this.radius = 5;
-        this.wheelDelta = 5;
+        this.radius = 1;
+        this.wheelDelta = 1;
         this.limits = { up : 0.2, down : -0.008 };
         this.mouseX = -1;
         this.mouseY= -1;
@@ -149,10 +149,17 @@ export default class CameraControl {
 
         this.radius += ( this.wheelDelta - this.radius ) / 5;
 
-        this.camera.position.set( this.target[0] + ( Math.sin( this.finalRadians.x ) * Math.cos( this.finalRadians.y ) * this.radius ),
-                                    this.target[1] + ( Math.sin( this.finalRadians.y ) * this.radius ),
-                                    this.target[2] + ( Math.cos( this.finalRadians.x ) * Math.cos( this.finalRadians.y ) * this.radius ) );
+        this.camera.position.set(
+            this.target[0] + ( Math.sin( this.finalRadians.x ) * Math.cos( this.finalRadians.y ) * this.radius ),
+            this.target[1] + ( Math.sin( this.finalRadians.y ) * this.radius ),
+            this.target[2] + ( Math.cos( this.finalRadians.x ) * Math.cos( this.finalRadians.y ) * this.radius )
+        );
 
+        this.camera.lookAt({
+            x : this.target[0],
+            y : this.target[1],
+            z : this.target[2]
+        });
 
         this.mouseX += (this._mouseX - this.mouseX) / 10;
         this.mouseY += (this._mouseY - this.mouseY) / 10;

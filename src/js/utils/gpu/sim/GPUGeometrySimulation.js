@@ -3,7 +3,7 @@
  */
 'use strict'
 
-import GPUGeometry from './GPUGeometry';
+import GPUGeometry from '../geom/GPUGeometry';
 import SimulationTexture from './SimulationTexture';
 
 import {ShaderMaterial} from 'three';
@@ -40,6 +40,7 @@ export default class GPUGeometrySimulation {
     }
 
     init(){
+
         this.gpuGeometry = new GPUGeometry( {
             geom: this.geom,
             renderer: this.renderer
@@ -54,6 +55,7 @@ export default class GPUGeometrySimulation {
 
         this.totalSimulation = this.sizeSimulation * this.sizeSimulation;
         this.totalVertices = this.gpuGeometry.total * this.totalSimulation;
+
     }
 
     setupMesh(){
@@ -95,15 +97,19 @@ export default class GPUGeometrySimulation {
         this.bufferGeometry.addAttribute( 'index2D', this.index2D );
 
         if( this.isMobile ){
+
             this.bufferMaterial = new RawShaderMaterial();
             this.bufferMaterial.vertexShader =  vs_buffer_mobile;
             this.bufferMaterial.fragmentShader = fs_buffer_mobile;
+
         } else {
+
             this.bufferMaterial = new ShadowMaterial();
             this.bufferMaterial.extensions.derivatives = true;
             this.bufferMaterial.lights = true;
             this.bufferMaterial.vertexShader =  vs_buffer;
             this.bufferMaterial.fragmentShader = fs_buffer;
+
         }
 
         this.bufferMaterial.uniforms['uGeometryTexture'] = { type: 't', value: this.gpuGeometry.geometryRT };
@@ -131,12 +137,14 @@ export default class GPUGeometrySimulation {
         } );
     }
 
-    update(){
+    update( t ) {
 
-        this.simulator.update();
-        this.bufferMaterial.uniforms[ 'uSimulationTexture' ].value = this.simulator.targets[ 1 - this.simulator.pingpong ];
-        this.bufferMaterial.uniforms[ 'uSimulationTexture' ].needsUpdate = true;
-        this.bufferMaterial.uniforms[ 'uSimulationPrevTexture' ].value = this.simulator.targets[ this.simulator.pingpong ];
-        this.bufferMaterial.uniforms[ 'uSimulationPrevTexture' ].needsUpdate = true;
+        this.simulator.update(t);
+        this.bufferMaterial.uniforms['uSimulationTexture'].value = this.simulator.targets[1 - this.simulator.pingpong];
+        this.bufferMaterial.uniforms['uSimulationTexture'].needsUpdate = true;
+        this.bufferMaterial.uniforms['uSimulationPrevTexture'].value = this.simulator.targets[this.simulator.pingpong];
+        this.bufferMaterial.uniforms['uSimulationPrevTexture'].needsUpdate = true;
+
     }
+
 }
