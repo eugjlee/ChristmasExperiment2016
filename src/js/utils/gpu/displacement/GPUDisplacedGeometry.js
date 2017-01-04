@@ -61,8 +61,6 @@ export default class GPUDisplacedGeometry extends BaseGLPass{
             }
         }
 
-        console.log( this.gpuGeometry.total, this.gpuGeometry.sizeW);
-
         this.bufferGeometry = new BufferGeometry();
         this.bufferGeometry.addAttribute( 'aV2I', this.index2D );
         this.bufferGeometry.addAttribute( 'position', this.positions );

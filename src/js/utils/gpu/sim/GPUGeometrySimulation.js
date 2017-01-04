@@ -63,20 +63,20 @@ export default class GPUGeometrySimulation {
         this.positions = new BufferAttribute( new Float32Array( this.totalVertices * 3 ), 3 );
         this.index2D = new BufferAttribute( new Float32Array( this.totalVertices * 4 ), 4 );
 
-        var geomSize = Math.sqrt(this.gpuGeometry.total);
-        var divSim = 1 / this.sizeSimulation;
-        var divGeom = 1 / geomSize;
+        let geomSize = Math.sqrt(this.gpuGeometry.total);
+        let divSim = 1 / this.sizeSimulation;
+        let divGeom = 1 / geomSize;
 
-        var uvSim  = new Vector2( 0, 0 );
-        var uvGeom = new Vector2( 0, 0 );
-        var counter = 0;
+        let uvSim  = new Vector2( 0, 0 );
+        let uvGeom = new Vector2( 0, 0 );
+        let counter = 0;
 
-        for ( var r = 0; r < this.totalSimulation; r++ ) {
+        for ( let r = 0; r < this.totalSimulation; r++ ) {
 
             uvSim.x = ( r % this.sizeSimulation ) / this.sizeSimulation;
             if (r % this.sizeSimulation == 0 && r != 0) uvSim.y += divSim;
 
-            for (var i = 0; i < this.gpuGeometry.total; i++) {
+            for (let i = 0; i < this.gpuGeometry.total; i++) {
 
                 uvGeom.x = ( i % geomSize ) / geomSize;
                 if (i % geomSize == 0 && i != 0) uvGeom.y += divGeom;
@@ -139,12 +139,13 @@ export default class GPUGeometrySimulation {
 
     update( t ) {
 
-        this.simulator.update(t);
-        this.bufferMaterial.uniforms['uSimulationTexture'].value = this.simulator.targets[1 - this.simulator.pingpong];
-        this.bufferMaterial.uniforms['uSimulationTexture'].needsUpdate = true;
-        this.bufferMaterial.uniforms['uSimulationPrevTexture'].value = this.simulator.targets[this.simulator.pingpong];
-        this.bufferMaterial.uniforms['uSimulationPrevTexture'].needsUpdate = true;
-
+        if(t < 300) {
+            this.simulator.update(t);
+            this.bufferMaterial.uniforms['uSimulationTexture'].value = this.simulator.targets[1 - this.simulator.pingpong];
+            this.bufferMaterial.uniforms['uSimulationTexture'].needsUpdate = true;
+            this.bufferMaterial.uniforms['uSimulationPrevTexture'].value = this.simulator.targets[this.simulator.pingpong];
+            this.bufferMaterial.uniforms['uSimulationPrevTexture'].needsUpdate = true;
+        }
     }
 
 }
