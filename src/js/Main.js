@@ -106,20 +106,20 @@ export default class Main {
     initializeGui() {
 
         this.lightProperties = {
-            positionX : -2,
-            positionY : 0.5,
-            positionZ : 0,
-            targetX: 0,
-            targetY: 0,
-            targetZ: 0,
-            fov : 70,
-            near: 0.1,
-            far: 10,
-            decay: 0,
-            penumbra: 0.1,
-            distance: 10,
+            positionX : 0.0000,
+            positionY : 1.7000,
+            positionZ : 0.0000,
+            targetX: 0.0000,
+            targetY: 0.0000,
+            targetZ: 0.0000,
+            fov : 70.0000,
+            near: 0.10000,
+            far: 10.0000,
+            decay: 0.00000,
+            penumbra: 0.10000,
+            distance: 10.0000,
             angle: Math.PI * 0.4,
-            bias: 0.01
+            bias: 0.0100
 
         };
 

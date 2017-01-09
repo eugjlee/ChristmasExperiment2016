@@ -43,7 +43,7 @@ void main(){
         simPosition *= 0.1;
     //    simPosition.y -= 0.5;
     //    simPosition.z -= 1.;
-        vec3 p = simPosition.rgb + rotatedPosition.rgb;
+    vec3 p = simPosition.rgb + rotatedPosition.rgb;
 
     vNormal = geomVertexNormal;
     vSimColor = simPosition;
