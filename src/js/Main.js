@@ -74,7 +74,7 @@ export default class Main {
         let square = s * s;
         let  initialBuffer = new Float32Array( square * 4, 4 );
         let  div = 1 / s;
-        for (var i = 0; i < square ; i++) {
+        for (let i = 0; i < square ; i++) {
             initialBuffer[ i * 4 ] = ( 2. * div * ( ( i % s ) + 0.5 ) - 1 ) * 1 * 0.5;
             initialBuffer[ i * 4 + 1 ] = 1.5;
             initialBuffer[ i * 4 + 2 ] = ( 2. * div * ( Math.floor( i * div ) + 0.5 ) - 1 ) * 1 * 0.5;
